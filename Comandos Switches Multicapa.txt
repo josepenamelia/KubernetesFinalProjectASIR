@@ -1,0 +1,60 @@
+SML-1
+# Crear interfaces VLAN
+/interface vlan add name=vlan10 interface=trunk vlan-id=10
+/interface vlan add name=vlan20 interface=trunk vlan-id=20
+/interface vlan add name=vlan30 interface=trunk vlan-id=30
+/interface vlan add name=vlan40 interface=trunk vlan-id=40
+
+# Asignar direcciones IP a las interfaces VLAN
+/ip address add address=192.168.10.1/24 interface=vlan10
+/ip address add address=192.168.20.1/24 interface=vlan20
+/ip address add address=192.168.30.1/24 interface=vlan30
+/ip address add address=192.168.40.1/24 interface=vlan40
+
+# Configurar el gateway
+/ip route add dst-address=0.0.0.0/0 gateway=192.168.1.1
+
+# Configurar el puente (bridge) y puerto troncal
+/interface bridge add name=trunk-bridge
+/interface bridge port add interface=ether1 bridge=trunk-bridge
+/interface bridge port add interface=ether2 bridge=trunk-bridge
+/interface bridge port add interface=ether3 bridge=trunk-bridge
+/interface bridge port add interface=ether4 bridge=trunk-bridge
+/interface bridge port add interface=trunk bridge=trunk-bridge
+
+# Configurar VLANs en el puente
+/interface bridge vlan add bridge=trunk-bridge tagged=trunk,ether1,ether2,ether3,ether4 vlan-ids=10
+/interface bridge vlan add bridge=trunk-bridge tagged=trunk,ether1,ether2,ether3,ether4 vlan-ids=20
+/interface bridge vlan add bridge=trunk-bridge tagged=trunk,ether1,ether2,ether3,ether4 vlan-ids=30
+/interface bridge vlan add bridge=trunk-bridge tagged=trunk,ether1,ether2,ether3,ether4 vlan-ids=40
+
+SML-2
+
+# Crear interfaces VLAN
+/interface vlan add name=vlan10 interface=trunk vlan-id=10
+/interface vlan add name=vlan20 interface=trunk vlan-id=20
+/interface vlan add name=vlan30 interface=trunk vlan-id=30
+/interface vlan add name=vlan40 interface=trunk vlan-id=40
+
+# Asignar direcciones IP a las interfaces VLAN
+/ip address add address=192.168.10.2/24 interface=vlan10
+/ip address add address=192.168.20.2/24 interface=vlan20
+/ip address add address=192.168.30.2/24 interface=vlan30
+/ip address add address=192.168.40.2/24 interface=vlan40
+
+# Configurar el gateway
+/ip route add dst-address=0.0.0.0/0 gateway=192.168.1.2
+
+# Configurar el puente (bridge) y puerto troncal
+/interface bridge add name=trunk-bridge
+/interface bridge port add interface=ether1 bridge=trunk-bridge
+/interface bridge port add interface=ether2 bridge=trunk-bridge
+/interface bridge port add interface=ether3 bridge=trunk-bridge
+/interface bridge port add interface=ether4 bridge=trunk-bridge
+/interface bridge port add interface=trunk bridge=trunk-bridge
+
+# Configurar VLANs en el puente
+/interface bridge vlan add bridge=trunk-bridge tagged=trunk,ether1,ether2,ether3,ether4 vlan-ids=10
+/interface bridge vlan add bridge=trunk-bridge tagged=trunk,ether1,ether2,ether3,ether4 vlan-ids=20
+/interface bridge vlan add bridge=trunk-bridge tagged=trunk,ether1,ether2,ether3,ether4 vlan-ids=30
+/interface bridge vlan add bridge=trunk-bridge tagged=trunk,ether1,ether2,ether3,ether4 vlan-ids=40

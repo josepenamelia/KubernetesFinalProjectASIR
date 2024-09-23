@@ -1,0 +1,46 @@
+# Configurar interfaces y asignar direcciones IP
+/ip address add address=192.168.1.2/24 interface=ether6
+/ip address add address=192.168.1.5/24 interface=ether2
+/ip address add address=192.168.1.6/24 interface=ether3
+/ip address add address=192.168.1.12/24 interface=ether4
+/ip address add address=192.168.50.2/29 interface=ether5
+
+# Configurar los nombres de las interfaces
+/interface ethernet set ether2 name=switchmulticapa1
+/interface ethernet set ether3 name=switchmulticapa2
+/interface ethernet set ether4 name=servidor_interno
+/interface ethernet set ether5 name=servidor_dmz
+
+# Crear interfaces VLAN
+/interface vlan add name=vlan10 interface=ether6 vlan-id=10
+/interface vlan add name=vlan20 interface=ether6 vlan-id=20
+/interface vlan add name=vlan30 interface=ether6 vlan-id=30
+/interface vlan add name=vlan40 interface=ether6 vlan-id=40
+
+# Asignar direcciones IP a las interfaces VLAN
+/ip address add address=192.168.10.2/24 interface=vlan10
+/ip address add address=192.168.20.2/24 interface=vlan20
+/ip address add address=192.168.30.2/24 interface=vlan30
+/ip address add address=192.168.40.2/24 interface=vlan40
+
+# Reglas de firewall para permitir tráfico interno en las VLANs
+/ip firewall filter add chain=forward action=accept in-interface=vlan10 out-interface=vlan10 comment="Permitir tráfico interno en VLAN 10"
+/ip firewall filter add chain=forward action=accept in-interface=vlan20 out-interface=vlan20 comment="Permitir tráfico interno en VLAN 20"
+/ip firewall filter add chain=forward action=accept in-interface=vlan30 out-interface=vlan30 comment="Permitir tráfico interno en VLAN 30"
+/ip firewall filter add chain=forward action=accept in-interface=vlan40 out-interface=vlan40 comment="Permitir tráfico interno en VLAN 40"
+
+# Reglas de firewall para permitir acceso de las VLANs a la red interna y viceversa
+/ip firewall filter add chain=forward action=accept src-address=192.168.10.0/24 dst-address=192.168.1.0/24 comment="Permitir tráfico de VLAN 10 a red interna"
+/ip firewall filter add chain=forward action=accept src-address=192.168.20.0/24 dst-address=192.168.1.0/24 comment="Permitir tráfico de VLAN 20 a red interna"
+/ip firewall filter add chain=forward action=accept src-address=192.168.30.0/24 dst-address=192.168.1.0/24 comment="Permitir tráfico de VLAN 30 a red interna"
+/ip firewall filter add chain=forward action=accept src-address=192.168.40.0/24 dst-address=192.168.1.0/24 comment="Permitir tráfico de VLAN 40 a red interna"
+/ip firewall filter add chain=forward action=accept src-address=192.168.1.0/24 dst-address=192.168.10.0/24 comment="Permitir tráfico de red interna a VLAN 10"
+/ip firewall filter add chain=forward action=accept src-address=192.168.1.0/24 dst-address=192.168.20.0/24 comment="Permitir tráfico de red interna a VLAN 20"
+/ip firewall filter add chain=forward action=accept src-address=192.168.1.0/24 dst-address=192.168.30.0/24 comment="Permitir tráfico de red interna a VLAN 30"
+/ip firewall filter add chain=forward action=accept src-address=192.168.1.0/24 dst-address=192.168.40.0/24 comment="Permitir tráfico de red interna a VLAN 40"
+
+# Reglas de firewall para bloquear acceso de VLANs a la DMZ
+/ip firewall filter add chain=forward action=drop src-address=192.168.10.0/24 dst-address=192.168.50.0/29 comment="Bloquear acceso de VLAN 10 a la DMZ"
+/ip firewall filter add chain=forward action=drop src-address=192.168.20.0/24 dst-address=192.168.50.0/29 comment="Bloquear acceso de VLAN 20 a la DMZ"
+/ip firewall filter add chain=forward action=drop src-address=192.168.30.0/24 dst-address=192.168.50.0/29 comment="Bloquear acceso de VLAN 30 a la DMZ"
+/ip firewall filter add chain=forward action=drop src-address=192.168.40.0/24 dst-address=192.168.50.0/29 comment="Bloquear acceso de VLAN 40 a la DMZ"
